@@ -1,6 +1,7 @@
 import { ArrowLeftOutlined, ArrowRightOutlined } from '@mui/icons-material';
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import { sliderItems } from '../data';
 
 const Container = styled.div`
     width: 100%;
@@ -36,7 +37,8 @@ const Arrow = styled.div`
 const Wrapper = styled.div`
     height: 100%;
     display: flex;
-    transform: translateX(0vw);
+    transition: 1.5s cubic-bezier(0.19, 1, 0.22, 1);
+    transform: translateX(${props=>props.slideIndex * -100}vw);
 `;
 
 const Slide = styled.div`
@@ -78,44 +80,31 @@ const Button = styled.button`
 const Slider = () => {
     const [slideIndex, setSlideIndex] = useState(0);
     const handleClick = direction => {
-
+        if(direction === "left"){
+            setSlideIndex(slideIndex > 0 ? slideIndex - 1 : 2);
+        }else{
+            setSlideIndex(slideIndex < 2 ? slideIndex + 1 : 0);
+        }
     }
     return (
         <Container>
             <Arrow direction="left" onClick={ ()=>handleClick("left") }>
                 <ArrowLeftOutlined/>
             </Arrow>
-            <Wrapper>
-                <Slide bg="f5fafd">
-                    <ImgContainer>
-                        <Image src='https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80'/>
-                    </ImgContainer>
-                    <InfoContainer>
-                        <Title>Temporada Navideña Que Mejor Regalo!</Title>
-                        <Description>No te pierdas nuestras ofertas de inauguración.</Description>
-                        <Button>Ver Ahora</Button>
-                    </InfoContainer>
-                </Slide>
-                <Slide bg="fcf1ed">
-                    <ImgContainer>
-                        <Image src='https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80'/>
-                    </ImgContainer>
-                    <InfoContainer>
-                        <Title>Concientete A Ti Mismo!</Title>
-                        <Description>No te pierdas nuestras ofertas de inauguración.</Description>
-                        <Button>Ver Ahora</Button>
-                    </InfoContainer>
-                </Slide>
-                <Slide bg="fdf0f4">
-                    <ImgContainer>
-                        <Image src='https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80'/>
-                    </ImgContainer>
-                    <InfoContainer>
-                        <Title>Viste A Tu Familia!</Title>
-                        <Description>No te pierdas nuestras ofertas de inauguración.</Description>
-                        <Button>Ver Ahora</Button>
-                    </InfoContainer>
-                </Slide>
+            <Wrapper slideIndex={slideIndex}>
+                {sliderItems.map(item=>(
+                    <Slide bg={item.bg} key={item.id}>
+                        <ImgContainer>
+                            <Image src={item.img}/>
+                        </ImgContainer>
+                        <InfoContainer>
+                            <Title>{item.title}</Title>
+                            <Description>{item.description}</Description>
+                            <Button>Ver Ahora</Button>
+                        </InfoContainer>
+                    </Slide>
+                ))}
+                
             </Wrapper>
             <Arrow direction="right" onClick={ ()=>handleClick("right") }>
                 <ArrowRightOutlined/>
