@@ -1,6 +1,7 @@
 import { FavoriteBorderOutlined, SearchOutlined, ShoppingCartOutlined } from '@mui/icons-material';
 import React from 'react'
 import styled from 'styled-components'
+import { mobile } from '../responsive';
 
 const Info = styled.div`
     opacity: 0;
@@ -31,6 +32,7 @@ const Container = styled.div`
     &:hover ${Info}{
         opacity: 1;
     }
+    ${mobile({minWidth: "200px"})}
 `;
 
 const Circle = styled.div`
@@ -39,10 +41,12 @@ const Circle = styled.div`
     border-radius: 50%;
     background-color: white;
     position: absolute;
+    ${mobile({display: "none"})}
 `;
 const Image = styled.img`
     height: 75%;
     z-index: 2;
+    ${mobile({width: "250px", objectFit: "cover"})}
 `;
 
 const Icon = styled.div`
