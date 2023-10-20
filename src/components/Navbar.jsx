@@ -1,14 +1,21 @@
-import React from 'react'
-import styled from 'styled-components'
+import React from 'react';
+import styled from 'styled-components';
 import { Search, ShoppingCartOutlined } from '@mui/icons-material';
 import { Badge } from '@mui/material';
 import { mobile } from '../responsive';
+import {useSelector} from "react-redux";
+import { Link } from 'react-router-dom';
 
 const Container = styled.div`
-    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    height: 80px;
     ${mobile({height: "50px"})}
 `;
 const Wrapper = styled.div`
+    width: 1400px;
     padding: 10px 20px;
     display: flex;
     justify-content: space-between;
@@ -70,6 +77,7 @@ const MenuItem = styled.div`
 `;
 
 const Navbar = () => {
+    const quantity = useSelector(state => state.cart.quantity);
     return (
     <Container>
         <Wrapper>
@@ -81,16 +89,18 @@ const Navbar = () => {
             </SearchContainer>
         </Left>
         <Center>
-            <Logo>ENCARGOS sv</Logo>
+            <Link to="/" style={{textDecoration: "none", color:"inherit"}}>
+                <Logo>ENCARGOS sv</Logo>
+            </Link>
         </Center>
         <Right>
-            <MenuItem>Register</MenuItem>
-            <MenuItem>Sign In</MenuItem>
-            <MenuItem>
-                <Badge badgeContent={4} color="primary">
-                <ShoppingCartOutlined color="action" />
-                </Badge>
-            </MenuItem>
+            <Link to="/carrito">
+                <MenuItem>
+                    <Badge badgeContent={quantity} color="primary">
+                    <ShoppingCartOutlined color="action" />
+                    </Badge>
+                </MenuItem>
+            </Link>
         </Right>
         </Wrapper>
     </Container>

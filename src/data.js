@@ -16,7 +16,7 @@ export const sliderItems = [
     {
         id: 3,
         img: "https://images.unsplash.com/photo-1545622783-b3e021430fee?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2068&q=80",
-        title: "Concientete A Ti Mismo!",
+        title: "Los regalos para la familia tambien son importantes.",
         description: "Prepara los regalos para tu familia.",
         bg: "fdf0f4"
     },
@@ -25,18 +25,21 @@ export const sliderItems = [
 export const categories = [
     {
         id: 1,
-        img: "https://images.pexels.com/photos/1572938/pexels-photo-1572938.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        title: "Trenchs"
+        img: "https://static.zara.net/photos///2023/I/0/2/p/3920/368/700/2/w/850/3920368700_2_1_1.jpg?ts=1696865575293",
+        title: "Gorros",
+        cat: "hat"
     },
     {
         id: 2,
-        img: "https://images.pexels.com/photos/8995809/pexels-photo-8995809.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        title: "Dresses"
+        img: "https://static.zara.net/photos///2023/I/0/2/p/1063/350/774/2/w/850/1063350774_2_4_1.jpg?ts=1697616937746",
+        title: "Hombre",
+        cat: "man"
     },
     {
         id: 3,
-        img: "https://images.pexels.com/photos/1757281/pexels-photo-1757281.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        title: "Light Jackets"
+        img: "https://static.zara.net/photos///2022/I/0/1/p/4424/159/800/12/w/613/4424159800_2_1_1.jpg?ts=1654863284553",
+        title: "Mujeres",
+        cat: "woman"
     },
 ];
 

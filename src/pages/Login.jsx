@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components';
+import { login } from '../redux/apiCalls';
+import {useDispatch, useSelector} from "react-redux";
 
 const Container = styled.div`
     width: 100vw;
@@ -43,6 +45,11 @@ const Button = styled.button`
     cursor: pointer;
     font-size: 1rem;
     margin-bottom: 10px;
+
+    &:disable{
+      color: green;
+      cursor: not-allowed;
+    }
 `;
 
 const Link = styled.a`
@@ -55,16 +62,31 @@ const Link = styled.a`
         color: teal;
     }
 `;
+const Error = styled.span`
+  color: red;
+  font-size: 1rem;
+`;
+
 
 const Login = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const {isFetching, error} = useSelector((state)=> state.user)
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    login(dispatch, {username, password})
+  };
   return (
     <Container>
       <Wrapper>
         <Title>Inicia Sesión</Title>
         <Form>
-          <Input placeholder="Nombre" />
-          <Input placeholder="Contraseña" />
-          <Button>Iniciar Sesión</Button>
+          <Input placeholder="Nombre" onChange={(e)=> setUsername(e.target.value)} />
+          <Input placeholder="Contraseña" onChange={(e)=> setPassword(e.target.value)} type='password' autoComplete='off'/>
+          <Button onClick={handleClick} disabled={isFetching} >Iniciar Sesión</Button>
+          { error && <Error>Datos incorrectos intentalo de nuevo..</Error>}
           <Link>¿Olvidaste Tu Contraseña?</Link>
           <Link>Crea Una Cuenta</Link>
         </Form>

@@ -2,6 +2,7 @@ import { FavoriteBorderOutlined, SearchOutlined, ShoppingCartOutlined } from '@m
 import React from 'react'
 import styled from 'styled-components'
 import { mobile } from '../responsive';
+import { Link } from 'react-router-dom';
 
 const Info = styled.div`
     opacity: 0;
@@ -28,6 +29,7 @@ const Container = styled.div`
     align-items: center;
     justify-content: center;
     background-color: #f5fbfd;
+    flex-direction: column;
     position: relative;
     &:hover ${Info}{
         opacity: 1;
@@ -35,14 +37,7 @@ const Container = styled.div`
     ${mobile({minWidth: "200px"})}
 `;
 
-const Circle = styled.div`
-    width: 350px;
-    height: 350px;
-    border-radius: 50%;
-    background-color: white;
-    position: absolute;
-    ${mobile({display: "none"})}
-`;
+
 const Image = styled.img`
     height: 75%;
     z-index: 2;
@@ -65,25 +60,35 @@ const Icon = styled.div`
         transform: scale(1.1);
     }
 `;
+const TitleInfo = styled.h3`
+    padding: 20px;
+    font-size: 1rem;
+    font-weight: 400;
+`
 
 
 const Product = ({item}) => {
   return (
     <Container>
-        <Circle/>
         <Image src={item.img} />
+        
         <Info>
             <Icon>
                 <ShoppingCartOutlined/>
             </Icon>
             <Icon>
-                <SearchOutlined/>
+                <Link  to={`/producto/${item._id}`} style={{color:"inherit"}}>
+                    <SearchOutlined/>
+                </Link>
             </Icon>
             <Icon>
                 <FavoriteBorderOutlined/>
             </Icon>
+            
         </Info>
+        <TitleInfo>{item.title}</TitleInfo>
     </Container>
+    
   )
 }
 

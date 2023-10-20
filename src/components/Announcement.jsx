@@ -15,7 +15,7 @@ const Container = styled.div`
 const Announcement = () => {
     return (
         <Container>
-            Emprende Tu Negocio Ahora!
+            ECOMMERCE DEMO
         </Container>
     )
 }

@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { sliderItems } from '../data';
 import { mobile } from '../responsive';
+import { Link } from 'react-router-dom';
 
 const Container = styled.div`
     width: 100%;
@@ -103,7 +104,9 @@ const Slider = () => {
                         <InfoContainer>
                             <Title>{item.title}</Title>
                             <Description>{item.description}</Description>
-                            <Button>Ver Ahora</Button>
+                            <Link to="/productos/woman" style={{textDecoration:"none", color:"inherit"}}>
+                                <Button>Ver Ahora</Button>
+                            </Link>
                         </InfoContainer>
                     </Slide>
                 ))}

@@ -1,9 +1,15 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {Add, Remove} from '@mui/icons-material'
 import styled from 'styled-components';
 import Navbar from '../components/Navbar';
 import Announcement from '../components/Announcement';
 import Footer from '../components/Footer';
+import { useSelector } from 'react-redux';
+import StripeCheckout from "react-stripe-checkout"
+import { userRequest } from '../config/axiosClient';
+import { useNavigate } from "react-router-dom";
+
+const KEY = import.meta.env.VITE_STRIPE_KEY;
 
 const Container = styled.div`
     
@@ -72,10 +78,7 @@ const ProductId = styled.span`
 
 `;
 const ProductColor = styled.div`
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background-color: #${props=> props.color};
+    font-size: 1rem;
 `;
 const ProductSize = styled.span`
 
@@ -144,93 +147,117 @@ const Button = styled.button`
 
 
 const Cart = () => {
-  return (
-    <Container>
-      <Navbar/>
-      <Announcement/>
-      <Wrapper>
-        <Title>Tu Carrito</Title>
-        <Top>
-            <TopButton>Seguir Comprando</TopButton>
-            <TopTexts>
-                <TopText>Carrito (2)</TopText>
-                <TopText>Lista de Deseo (0)</TopText>
-            </TopTexts>
-            <TopButton type='filled'>Pagar Ahora</TopButton>
-        </Top>
-        <Bottom>
-            <Info>
-                <Product>
-                    <ProductDetail>
-                        <Image src="https://static.zara.net/photos///2023/I/0/1/p/9878/164/982/2/w/850/9878164982_1_1_1.jpg?ts=1690454106204" />
-                        <Details>
-                            <ProductName><b>Producto: </b>Dress Satin</ProductName>
-                            <ProductId><b>ID: </b>2132123</ProductId>
-                            <ProductColor color='1fc7c7' />
-                            <ProductSize><b>Size: </b>M</ProductSize>
-                        </Details>
-                    </ProductDetail>
-                    <PriceDetail>
-                        <ProductAmountContainer>
-                            <Add/>
-                            <ProductAmount>2</ProductAmount>
-                            <Remove/>
-                        </ProductAmountContainer>
-                        <ProductPrice>
-                            $67
-                        </ProductPrice>
-                    </PriceDetail>
-                </Product>
-                <Hr/>
-                <Product>
-                    <ProductDetail>
-                        <Image src="https://static.zara.net/photos///2023/I/0/1/p/5039/434/720/2/w/850/5039434720_1_1_1.jpg?ts=1696320544912" />
-                        <Details>
-                            <ProductName><b>Producto: </b>Dress Suave Algodon</ProductName>
-                            <ProductId><b>ID: </b>3213422</ProductId>
-                            <ProductColor color='D3D3D3' />
-                            <ProductSize><b>Size: </b>S</ProductSize>
-                        </Details>
-                    </ProductDetail>
-                    <PriceDetail>
-                        <ProductAmountContainer>
-                            <Add/>
-                            <ProductAmount>2</ProductAmount>
-                            <Remove/>
-                        </ProductAmountContainer>
-                        <ProductPrice>
-                            $38
-                        </ProductPrice>
-                    </PriceDetail>
-                </Product>
-            </Info>
-            <Summary>
-                <SummaryTitle>Resumen De Compra</SummaryTitle>
-                <SummaryItem>
-                    <SummaryItemText>Subtotal</SummaryItemText>
-                    <SummaryItemPrice>$105</SummaryItemPrice>
-                </SummaryItem>
-                <SummaryItem>
-                    <SummaryItemText>Envio Estimado</SummaryItemText>
-                    <SummaryItemPrice>$5</SummaryItemPrice>
-                </SummaryItem>
-                <SummaryItem>
-                    <SummaryItemText>Descuento Envio</SummaryItemText>
-                    <SummaryItemPrice>$ -5</SummaryItemPrice>
-                </SummaryItem>
-                <SummaryItem  type="total">
-                    <SummaryItemText>Total</SummaryItemText>
-                    <SummaryItemPrice>$105</SummaryItemPrice>
-                </SummaryItem>
-                <Button>
-                    Pagar
-                </Button>
-            </Summary>
-        </Bottom>
-      </Wrapper>
-      <Footer/>
-    </Container>
-  )
+    const cart = useSelector(state => state.cart);
+    const [stripeToken, setStripeToken] = useState(null);
+    const history = useNavigate();
+
+    const onToken =(token) => {
+        setStripeToken(token);
+    }
+    useEffect(() => {
+        const makeRequest = async () => {
+            try {
+                const res = await userRequest.post("/checkout/payment", {
+                    tokenId: stripeToken.id,
+                    amount: 500
+                });
+                history("/success", {
+                    stripeData: res.data,
+                    products: cart
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        if(stripeToken) {
+            makeRequest();
+        }
+    }, [stripeToken, cart.total, history])
+    return (
+        <Container>
+            <Announcement/>
+            <Navbar/>
+            <Wrapper>
+            <Title>Tu Carrito</Title>
+            <Top>
+                <TopButton>Seguir Comprando</TopButton>
+                <TopTexts>
+                    <TopText>Carrito (2)</TopText>
+                    <TopText>Lista de Deseo (0)</TopText>
+                </TopTexts>
+                <TopButton type='filled'>Pagar Ahora</TopButton>
+            </Top>
+            <Bottom>
+                <Info>
+                    {cart.products?.map(product =>(
+                        <Product>
+                            <ProductDetail>
+                                <Image src={product.img} />
+                                <Details>
+                                    <ProductName><b>Producto: </b>{product.title}</ProductName>
+                                    <ProductId><b>ID: </b>{product._id}</ProductId>
+                                    <ProductColor color={product.color}> Color: {product.color}</ProductColor> 
+                                    <ProductSize><b>Size: {product.size}</b></ProductSize>
+                                </Details>
+                            </ProductDetail>
+                            <PriceDetail>
+                                <ProductAmountContainer>
+                                    <Add/>
+                                    <ProductAmount>{product.quantity}</ProductAmount>
+                                    <Remove/>
+                                </ProductAmountContainer>
+                                <ProductPrice>
+                                    $ {product.price * product.quantity}
+                                </ProductPrice>
+                            </PriceDetail>
+                        </Product>
+                    )) }
+                    <Hr/>
+                </Info>
+                <Summary>
+                    <SummaryTitle>Resumen De Compra</SummaryTitle>
+                    <SummaryItem>
+                        <SummaryItemText>Subtotal</SummaryItemText>
+                        <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
+                    </SummaryItem>
+                    <SummaryItem>
+                        <SummaryItemText>Envio Estimado</SummaryItemText>
+                        <SummaryItemPrice>$5</SummaryItemPrice>
+                    </SummaryItem>
+                    <SummaryItem>
+                        <SummaryItemText>Descuento Envio</SummaryItemText>
+                        <SummaryItemPrice>$ -5</SummaryItemPrice>
+                    </SummaryItem>
+                    <SummaryItem  type="total">
+                        <SummaryItemText>Total</SummaryItemText>
+                        <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
+                    </SummaryItem>
+                    <StripeCheckout name='Test Shop' image='https://images.unsplash.com/photo-1516876437184-593fda40c7ce?auto=format&fit=crop&q=80&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&w=2072'
+                        billingAddress
+                        shippingAddress
+                        description={`Your total is $${cart.total}`}
+                        amount={cart.total*100}
+                        token={onToken}
+                        stripeKey={KEY}
+                    >
+                        <button style={{
+                            border: "none",
+                            width: "120px",
+                            borderRadius: "5px",
+                            padding: "20px",
+                            backgroundColor: "black",
+                            color: "white",
+                            cursor: "pointer"
+                        }}>
+                        PAGAR
+                        </button>
+                    </StripeCheckout>
+                </Summary>
+            </Bottom>
+            </Wrapper>
+            <Footer/>
+        </Container>
+    )
 }
 
 export default Cart
